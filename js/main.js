@@ -39,14 +39,15 @@
     // Start gate (browser audio policies)
     // Safari/iOS requires an explicit AudioContext resume inside a user gesture.
     let starting = false;
-    async function startFromGesture() {
+    function startFromGesture() {
         if (dom.tapToStart.dataset.started || starting) return;
         starting = true;
         dom.tapToStart.dataset.started = "1";
 
         try {
             if (AudioEngine && typeof AudioEngine.unlock === "function") {
-                await AudioEngine.unlock();
+                // Don't await: keep everything inside the same gesture call stack.
+                void AudioEngine.unlock();
             } else if (AudioEngine && typeof AudioEngine.ensure === "function") {
                 AudioEngine.ensure();
             }
@@ -57,9 +58,29 @@
         Game.start();
     }
 
+    // Primary: tap the button
     ["pointerdown", "touchstart", "click"].forEach((evt) => {
         dom.tapToStart.addEventListener(evt, startFromGesture, {
-            passive: evt !== "click",
+            passive: true,
+        });
+    });
+
+    // Fallback for iOS/Safari quirks: if something overlays the button,
+    // allow starting on the first tap anywhere inside the main card.
+    const card = document.querySelector(".card");
+    function maybeStartFromCard(e) {
+        if (dom.tapToStart.dataset.started || starting) return;
+        const target = /** @type {HTMLElement|null} */ (e.target);
+        if (!target) return;
+        if (target.closest(".langTopRight")) return;
+        if (target.closest("a")) return;
+        if (card && card.contains(target)) startFromGesture();
+    }
+
+    ["pointerdown", "touchstart"].forEach((evt) => {
+        document.addEventListener(evt, maybeStartFromCard, {
+            capture: true,
+            passive: true,
         });
     });
 
