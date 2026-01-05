@@ -27,6 +27,7 @@ body {
   align-items: center;
   justify-content: center;
   padding: 24px;
+  min-height: 100svh;
 }
 
 .langTopRight {
@@ -304,6 +305,33 @@ body {
   }
   .timer {
     font-size: 54px;
+  }
+}
+
+/* Short screens (iPhone Safari address bar, landscape, etc.) */
+@media (max-height: 740px) {
+  body {
+    align-items: flex-start;
+    padding-top: 14px;
+    padding-bottom: 14px;
+  }
+
+  .wrap {
+    gap: 12px;
+  }
+
+  .timer {
+    font-size: 48px;
+  }
+}
+
+@media (max-height: 660px) {
+  .timer {
+    font-size: 44px;
+  }
+
+  .choices {
+    margin-top: 12px;
   }
 }
 @media (max-width: 440px) {
