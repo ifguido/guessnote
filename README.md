@@ -2,6 +2,10 @@
 
 A tiny browser game: you hear a 4‑chord progression, then you guess the hidden 4th chord.
 
+## Live
+
+https://www.guessnote.live/
+
 ## Run locally
 
 Because the project loads multiple JS files, run it with a local web server:
