@@ -28,6 +28,16 @@ body {
   justify-content: center;
   padding: 24px;
 }
+
+.langTopRight {
+  position: fixed;
+  top: 14px;
+  right: 14px;
+  z-index: 80;
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+}
 .wrap {
   width: min(880px, 100%);
   display: flex;
@@ -80,7 +90,7 @@ body {
 }
 .top {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: flex-start;
   gap: 12px;
 }
@@ -107,6 +117,17 @@ body {
   gap: 10px;
   flex-wrap: wrap;
   justify-content: flex-end;
+}
+
+.langBtn {
+  padding: 8px 10px;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  opacity: 0.75;
+}
+
+.langBtn.active {
+  opacity: 1;
 }
 
 .score {
@@ -183,6 +204,11 @@ body {
 }
 .slot.q {
   opacity: 0.7;
+  cursor: pointer;
+}
+
+.slot.q:hover {
+  background: rgba(0, 0, 0, 0.03);
 }
 
 .row {
@@ -371,6 +397,14 @@ a {
   text-decoration: none;
   border-bottom: 2px solid #000;
   font-weight: 950;
+}
+
+.ghLink {
+  border-bottom: none;
+}
+
+.ghIcon {
+  display: block;
 }
 .tap {
   border: var(--border);

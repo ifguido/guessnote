@@ -44,12 +44,37 @@
         }
     });
 
-    dom.muteToggle.addEventListener("click", () => {
-        const isMuted = AudioEngine.toggleMuted();
-        dom.muteState.textContent = isMuted ? t("mute.on", { fallback: "ON" }) : t("mute.off", { fallback: "OFF" });
-        if (isMuted) AudioEngine.killAll(true);
-        logEvent("mute_toggle", { muted: isMuted ? 1 : 0 });
+    // Language selector
+    function setLang(next) {
+        try {
+            const url = new URL(window.location.href);
+            url.searchParams.set("lang", next);
+            window.location.href = url.toString();
+        } catch {
+            // ignore
+        }
+    }
+
+    function markActiveLang() {
+        const current = (i18n && i18n.lang) ? String(i18n.lang) : "en";
+        document.querySelectorAll(".langBtn").forEach((el) => {
+            const lang = el.getAttribute("data-lang");
+            if (lang === current) el.classList.add("active");
+            else el.classList.remove("active");
+        });
+    }
+
+    document.querySelectorAll(".langBtn").forEach((el) => {
+        el.addEventListener("click", () => {
+            const lang = el.getAttribute("data-lang");
+            if (lang) {
+                logEvent("lang_change", { lang });
+                setLang(lang);
+            }
+        });
     });
+
+    markActiveLang();
 
     // Keyboard shortcuts
     window.addEventListener("keydown", (e) => {
@@ -59,13 +84,6 @@
             e.preventDefault();
             Game.replayUnknown();
             logEvent("replay_unknown", {});
-        }
-
-        if (k === "m") {
-            const isMuted = AudioEngine.toggleMuted();
-            dom.muteState.textContent = isMuted ? t("mute.on", { fallback: "ON" }) : t("mute.off", { fallback: "OFF" });
-            if (isMuted) AudioEngine.killAll(true);
-            logEvent("mute_toggle", { muted: isMuted ? 1 : 0 });
         }
 
         if (k === "1" || k === "2" || k === "3" || k === "4") {
@@ -117,6 +135,18 @@
             logEvent("share_success", { platform: "instagram", method: "copy" });
         } catch {
             window.prompt(t("share.copy.prompt", { fallback: "Copy this:" }), txt);
+        }
+    });
+
+    // Mobile-friendly replay: tap the '?' slot.
+    dom.progression.addEventListener("click", (e) => {
+        const tEl = /** @type {HTMLElement|null} */ (e.target);
+        if (!tEl) return;
+        const slot = tEl.closest(".slot");
+        if (!slot) return;
+        if (slot.classList.contains("q")) {
+            Game.replayUnknown();
+            logEvent("replay_unknown", { method: "tap" });
         }
     });
 

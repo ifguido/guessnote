@@ -27,7 +27,22 @@
     const analytics = root.GuessNote.analytics;
 
     const FEEDBACK_MS = 1550;
-    const MAX_ROUNDS = 7;
+    const MAX_ROUNDS = 5;
+
+    function fitTextToBox(el, { maxPx = 36, minPx = 16, padPx = 22 } = {}) {
+        if (!el) return;
+        const node = /** @type {HTMLElement} */ (el);
+        node.style.fontSize = maxPx + "px";
+        node.style.whiteSpace = "nowrap";
+
+        // Reduce font size until it fits (or we reach min).
+        let size = maxPx;
+        const box = Math.max(10, node.clientWidth - padPx);
+        while (size > minPx && node.scrollWidth > box) {
+            size -= 1;
+            node.style.fontSize = size + "px";
+        }
+    }
 
     function t(key, vars) {
         try {
@@ -57,6 +72,7 @@
         for (let i = 0; i < 3; i++) {
             slots[i].textContent = chordLabel(chordIds3[i] || "");
             slots[i].classList.remove("q");
+            fitTextToBox(slots[i]);
         }
         slots[3].textContent = "?";
         slots[3].classList.add("q");
@@ -103,7 +119,7 @@
     function renderStats(state) {
         dom.okCount.textContent = String(state.correct);
         dom.noCount.textContent = String(Math.max(0, state.total - state.correct));
-        dom.round.textContent = String(state.round);
+        dom.round.textContent = String(state.round) + "/" + String(MAX_ROUNDS);
         dom.roundLeft.textContent = String(Math.max(0, MAX_ROUNDS - state.total));
     }
 
@@ -490,9 +506,6 @@
             // Reset end UI
             dom.endCard.className = "endCard";
             dom.endCard.setAttribute("aria-hidden", "true");
-
-            // Ensure UI matches engine state
-            dom.muteState.textContent = AudioEngine.isMuted() ? "ON" : "OFF";
 
             state.started = true;
             dom.tapToStart.textContent = t("start.playing", { fallback: "PLAYING" });
