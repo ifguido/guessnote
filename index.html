@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>guessnote.live — MVP</title>
+    <link
+      rel="icon"
+      type="image/png"
+      href="/assets/favicon-96x96.png"
+      sizes="96x96"
+    />
+    <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
+    <link rel="shortcut icon" href="/assets/favicon.ico" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="/assets/apple-touch-icon.png"
+    />
+    <link rel="manifest" href="/assets/site.webmanifest" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="overlay" id="overlay" aria-hidden="true"></div>
+    <div class="wrap">
+      <div class="timer" id="timer">
+        <span id="timerValue">10.0</span><small>s</small>
+      </div>
+
+      <div class="leftTimer" aria-label="Rounds left">
+        <span id="roundLeft">7</span><small data-i18n="round.left">LEFT</small>
+      </div>
+
+      <div class="card">
+        <div class="top">
+          <div class="brand">
+            <div class="h">guessnote.live</div>
+          </div>
+          <div class="stats">
+            <div class="score ok" aria-label="Aciertos">
+              <span class="k">OK</span> <span class="v" id="okCount">0</span>
+            </div>
+            <div class="score bad" aria-label="Errores">
+              <span class="k">NO</span> <span class="v" id="noCount">0</span>
+            </div>
+            <div class="tap" id="muteToggle" aria-label="Mute audio">
+              <span data-i18n="mute">MUTE</span>:
+              <span id="muteState">OFF</span>
+            </div>
+            <div class="msg" id="msg"></div>
+          </div>
+        </div>
+
+        <div class="staffBox">
+          <div class="row startRow" style="margin-bottom: 10px">
+            <div class="pill subtle" style="border-radius: 14px">
+              <span class="k" data-i18n="round">ROUND</span>
+              <span class="v" id="round">1</span>
+            </div>
+            <div class="tap start" id="tapToStart">TAP / CLICK TO START</div>
+          </div>
+
+          <div
+            class="progression"
+            id="progression"
+            aria-label="Progresión: 3 acordes visibles y un acorde oculto"
+          >
+            <div class="slot">C</div>
+            <div class="slot">F</div>
+            <div class="slot">G</div>
+            <div class="slot q">?</div>
+          </div>
+        </div>
+
+        <div class="choices" id="choices"></div>
+
+        <div class="endCard" id="endCard" aria-hidden="true">
+          <div class="endTitle" data-i18n="result.title">Resultado</div>
+          <div class="endScore" id="endScore">0/7</div>
+          <div class="endShareLabel" data-i18n="share.label">Compartí:</div>
+          <div class="endShareRow">
+            <div
+              class="tap"
+              id="shareWhatsapp"
+              aria-label="Share with WhatsApp"
+            >
+              <span data-i18n="share.whatsapp">WhatsApp</span>
+            </div>
+            <div
+              class="tap"
+              id="shareInstagram"
+              aria-label="Share with Instagram"
+            >
+              <span data-i18n="share.instagram">Instagram</span>
+            </div>
+            <div
+              class="tap"
+              id="shareFacebook"
+              aria-label="Share with Facebook"
+            >
+              <span data-i18n="share.facebook">Facebook</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer">
+          <div><b data-i18n="footer.replay">Replay ?:</b> Space</div>
+          <div>
+            <a
+              href="https://github.com/ifguido/guessnote"
+              target="_blank"
+              rel="noreferrer"
+              >GitHub</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script defer src="js/utils.js"></script>
+    <script defer src="js/i18n.js"></script>
+
+    <script
+      defer
+      src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"
+    ></script>
+    <script
+      defer
+      src="https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics-compat.js"
+    ></script>
+    <script defer src="js/analytics.js"></script>
+
+    <script defer src="js/dom.js"></script>
+    <script defer src="js/audioEngine.js"></script>
+    <script defer src="js/chords.js"></script>
+    <script defer src="js/game.js"></script>
+    <script defer src="js/main.js"></script>
+  </body>
+</html>
