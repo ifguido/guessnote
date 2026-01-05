@@ -37,11 +37,30 @@
     }
 
     // Start gate (browser audio policies)
-    dom.tapToStart.addEventListener("click", () => {
-        if (!dom.tapToStart.dataset.started) {
-            dom.tapToStart.dataset.started = "1";
-            Game.start();
+    // Safari/iOS requires an explicit AudioContext resume inside a user gesture.
+    let starting = false;
+    async function startFromGesture() {
+        if (dom.tapToStart.dataset.started || starting) return;
+        starting = true;
+        dom.tapToStart.dataset.started = "1";
+
+        try {
+            if (AudioEngine && typeof AudioEngine.unlock === "function") {
+                await AudioEngine.unlock();
+            } else if (AudioEngine && typeof AudioEngine.ensure === "function") {
+                AudioEngine.ensure();
+            }
+        } catch {
+            // ignore
         }
+
+        Game.start();
+    }
+
+    ["pointerdown", "touchstart", "click"].forEach((evt) => {
+        dom.tapToStart.addEventListener(evt, startFromGesture, {
+            passive: evt !== "click",
+        });
     });
 
     // Language selector

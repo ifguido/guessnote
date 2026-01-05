@@ -106,6 +106,16 @@
             if (ctx) return;
             ctx = new (window.AudioContext || window.webkitAudioContext)();
 
+            // Safari/iOS: AudioContext often starts suspended until a user gesture.
+            // This call is harmless in other browsers; failures are ignored.
+            try {
+                if (ctx.state === "suspended" || ctx.state === "interrupted") {
+                    void ctx.resume().catch(() => { });
+                }
+            } catch {
+                // ignore
+            }
+
             master = ctx.createGain();
             master.gain.value = 0.7;
 
@@ -180,6 +190,25 @@
         function time() {
             ensure();
             return ctx.currentTime;
+        }
+
+        /**
+         * Attempt to unlock audio output (required by Safari/iOS).
+         * Should be called from a user gesture handler (click/touch/pointer).
+         * @returns {Promise<boolean>}
+         */
+        function unlock() {
+            ensure();
+            try {
+                if (!ctx) return Promise.resolve(false);
+                if (ctx.state === "running") return Promise.resolve(true);
+                return ctx.resume().then(
+                    () => true,
+                    () => false
+                );
+            } catch {
+                return Promise.resolve(false);
+            }
         }
 
         function killAll(immediate = false) {
@@ -375,6 +404,7 @@
 
         return {
             ensure,
+            unlock,
             time,
             killAll,
             play,
